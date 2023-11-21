@@ -1,0 +1,10 @@
+{
+    "exec":"npm run start",
+    "watch":[
+      "src/*"
+    ],
+    "ignore": [
+      "**/__tests__/**",
+      "*.test.js"
+    ]
+}

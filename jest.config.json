@@ -1,0 +1,11 @@
+{
+  "testEnvironment": "node",
+  "coveragePathIgnorePatterns": [
+    "/dist/",
+    "/node_modules/",
+    "/bin/",
+    "./src/index.js",
+    "./src/reportWebVitals.js"
+  ],
+  "modulePathIgnorePatterns": ["/dist/", "/node_modules/", "/bin/"]
+}
