@@ -1,0 +1,506 @@
+openapi: 3.0.0
+info:
+  title: Crypto Wise API
+  version: 1.0.0
+  description: API Documentation for usage of crypto wise api
+  contact:
+    name: Team Dagang Digital
+    url: 'https://www.example.com/support'
+    email: 'support@example.com'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+tags:
+  - name: Tokens
+    description: Tokens endpoint
+  - name: Customers
+    description: Customers endpoint
+  - name: Tickers
+    description: Tickers endpoint
+  - name: Price Histories
+    description: Price Histories endpoint
+  - name: Transactions
+    description: Transactions endpoint
+  - name: Portfolio
+    description: Portfolio endpoint
+servers:
+  - url: 'http://localhost:8000'
+    description: CryptoWise API Base URL
+paths:
+  /customers/{customerId}:
+    get:
+      summary: Retrieve a customer by customer id
+      description: Retrieve customer by customer id
+      tags: [Customers]
+      parameters:
+        - in: path
+          name: customerId
+          description: string customer ID
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Success get customer by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  username:
+                    type: string
+                example:
+                  id: '123'
+                  name: will
+                  username: willyoct123
+        '400':
+          description: invalid customerId Type
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'invalid customerId type'
+        '401':
+          description: UnAuthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Invalid Token'
+  /customers/{customerId}/portfolio-histories:
+    get:
+      summary: list of portfolio histories
+      description: Retrieves a list of portfolio histories of a customer
+      tags: [Portfolio]
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: string
+            description: Customer ID to to look list of portfolio histories
+        - in: query
+          name: date_from
+          schema:
+            type: string
+        - in: query
+          name: date_to
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  portfolios:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                        tickers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              ticker:
+                                type: string
+                              amount:
+                                type: number
+                              id:
+                                type: string
+                      example:
+                        date: 2023-11-04T17:00:00.000Z
+                        tickers:
+                          - ticker: IDR
+                            amount: 10000000
+                            id: 654b1142b811bfd8313a274b
+
+        '400':
+          description: invalid customerId Type
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'invalid customerId type'
+        '401':
+          description: UnAuthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Invalid Token'
+  /tickers:
+    get:
+      summary: list of tickers
+      description: Retrieves a list of tickers
+      tags: [Tickers]
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tickers:
+                    type: array
+                    items:
+                      type: object
+                example:
+                  tickers:
+                    - id: '123'
+                      name: Bitcoin
+                      ticker: BTC
+                      description: Bitcoin is a decentralized digital currency.
+        '400':
+          description: invalid customerId Type
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'invalid customerId type'
+        '401':
+          description: UnAuthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Invalid Token'
+  /tickers/{id}:
+    get:
+      summary: Retrieve a ticker by ticker id
+      description: Retrieve ticker by ticker id
+      tags: [Tickers]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: string ticker ID
+          example: '654b1142b811bfd8313a274b'
+      responses:
+        '200':
+          description: Success get ticker by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                example:
+                  id: '123'
+                  name: Bitcoin
+                  ticker: BTC
+                  description: Bitcoin is a decentralized digital currency.
+        '400':
+          description: invalid tickerId Type
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'invalid tickerId type'
+        '401':
+          description: UnAuthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Invalid Token'
+  /price-histories:
+    get:
+      summary: list of price histories of tickers
+      description: Retrieves a list of price histories of tickers
+      tags: [Price Histories]
+      parameters:
+        - in: query
+          schema:
+            type: string
+          name: date_from
+          description: dateFrom
+          example: '2023-11-04T09:14:10.944Z'
+        - in: query
+          schema:
+            type: string
+          name: date_to
+          description: dateTo
+          example: '2023-11-05T09:14:10.944Z'
+        - in: query
+          schema:
+            type: string
+          name: search
+          description: search
+          example: 'Bitcoin'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  priceHistories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        price:
+                          type: number
+                        ticker:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            id:
+                              type: string
+                        date:
+                          type: string
+                    example:
+                      - id: '123'
+                        price: 1234567.88
+                        ticker: { name: 'Bitcoin', id: '6545f62508c52cc0569dc101' }
+                        date: '2023-11-04T09:14:10.944Z'
+        '401':
+          description: UnAuthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Invalid Token'
+  /customers/{customerId}/transactions:
+    get:
+      summary: list of transactions
+      description: Retrieves a list of transactions
+      tags: [Transactions]
+      parameters:
+        - in: path
+          required: true
+          schema:
+            type: string
+          name: customerId
+          description: customerId
+          example: '6548e650b1c6cd04394bdf6c'
+        - in: query
+          schema:
+            type: string
+          name: category
+          description: category
+          example: 'buy'
+        - in: query
+          schema:
+            type: string
+          name: ticker
+          description: ticker
+          example: 'BTC'
+        - in: query
+          schema:
+            type: string
+          name: sort
+          description: sort
+          example: 'ascending'
+        - in: query
+          schema:
+            type: number
+          name: limit
+          description: limit
+          example: 10
+        - in: query
+          schema:
+            type: number
+          name: page
+          description: page
+          example: 1
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                    example:
+                      - id: '123'
+                        amount: 1
+                        totalPrice: 1234567.88
+                        category: buy
+                        date: '2023-11-04T09:14:10.944Z'
+        '400':
+          description: invalid customerId type
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'invalid customerId type'
+        '401':
+          description: UnAuthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Invalid Token'
+    post:
+      summary: create a transaction
+      description: Create new transaction
+      tags: [Transactions]
+      parameters:
+        - in: path
+          required: true
+          schema:
+            type: string
+          name: customerId
+          description: customerId
+          example: '6548e650b1c6cd04394bdf6c'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tickerId:
+                  type: string
+                amount:
+                  type: number
+                fee:
+                  type: number
+                category:
+                  type: string
+                totalPrice:
+                  type: number
+            examples:
+              Valid transaction payload:
+                value:
+                  tickerId: 65532555dae9301164482dcd
+                  amount: 1
+                  fee: 450
+                  category: buy
+                  totalPrice: 449550
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: '123'
+                  amount: 1
+                  totalPrice: 1234567.88
+                  category: buy
+                  date: '2023-11-04T09:14:10.944Z'
+        '400':
+          description: Invalid input || invalid customerId type
+          content:
+            application/json:
+              examples:
+                invalidInput:
+                  summary: Invalid input
+                  description: when request body has invalid data, like wrong type, or empty required data, etc.
+                  value:
+                    message: 'Invalid input!'
+                invalidCustomerId:
+                  summary: invalid customerId type
+                  description: invalid customerId type
+                  value:
+                    message: 'invalid customerId type'
+        '401':
+          description: UnAuthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Invalid Token'
+  /tokens:
+    post:
+      summary: Retrieve a Authentication Token
+      tags: [Tokens]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              example:
+                username: 'Aulia'
+                password: '123456'
+      responses:
+        '200':
+          description: Success create token for Authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                example:
+                  token: 'abcde'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Username and/or password is incorrect'
